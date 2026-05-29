@@ -16,8 +16,8 @@ This project uses computer vision, machine learning, and 3D visualization techni
 # Installation:
 ## 1. Clone the Repository
 
-git clone ### <your-repository-url>
-cd ### <repository-folder>
+git clone <your-repository-url>
+cd <repository-folder>
 
 ## 2. Create a Virtual Environment (Recommended)
 python -m venv venv
