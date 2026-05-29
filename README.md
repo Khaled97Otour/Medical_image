@@ -120,31 +120,6 @@ Builds a 3D point cloud model from sequential MRI slices using:
 
 ---
 
-# Installation
-
-## Clone the Repository
-
-```bash
-git clone <your-repository-url>
-cd <repository-folder>
-```
-
-## Install Dependencies
-
-```bash
-pip install torch
-pip install opencv-python
-pip install numpy
-pip install scikit-learn
-pip install matplotlib
-pip install scikit-image
-pip install open3d
-```
-
-Tkinter usually comes preinstalled with Python.
-
----
-
 # Project Structure
 
 ```text
