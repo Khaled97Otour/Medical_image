@@ -12,6 +12,48 @@ A Python-based project for **brain MRI image analysis**, including:
 * 3D reconstruction and visualization
 
 This project uses computer vision, machine learning, and 3D visualization techniques to process grayscale MRI brain images.
+---
+#Installation:
+##1. Clone the Repository
+git clone <your-repository-url>
+cd <repository-folder>
+##2. Create a Virtual Environment (Recommended)
+python -m venv venv
+Activate Environment
+
+###Windows:
+
+venv\Scripts\activate
+
+###Mac/Linux:
+
+source venv/bin/activate
+##3. Install Required Libraries
+
+###Install all dependencies using pip:
+
+pip install numpy
+pip install opencv-python
+pip install matplotlib
+pip install scikit-learn
+pip install scikit-image
+pip install open3d
+pip install torch
+##4. (Optional) Install Everything at Once
+pip install numpy opencv-python matplotlib scikit-learn scikit-image open3d torch
+##5. Verify Installation
+
+Run Python and test imports:
+
+import cv2
+import torch
+import numpy
+import sklearn
+import open3d
+import skimage
+import matplotlib
+
+If no errors appear, installation is successful.
 
 ---
 
