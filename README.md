@@ -21,31 +21,165 @@ git clone <your-repository-url>
 cd <repository-folder>
 ```
 
-## 2. Create a Virtual Environment (Recommended)
-python -m venv venv
-Activate Environment
+## 2. Environment Setup
 
-### Windows:
+This project uses a dedicated Conda environment for medical image processing, brain segmentation, deep learning, and 3D reconstruction.
 
-venv\Scripts\activate
+The environment includes:
 
-### Mac/Linux:
+- PyTorch with CUDA support
+- MONAI for medical image deep learning and U-Net models
+- OpenCV for image processing
+- Scikit-image for morphology operations and image analysis
+- Scikit-learn for machine learning methods (e.g., K-means clustering)
+- Open3D for 3D visualization and reconstruction
+- Nibabel/SimpleITK for medical image formats
+- Scientific Python libraries (NumPy, SciPy, Matplotlib, Pandas)
 
-source venv/bin/activate
-## 3. Install Required Libraries
+---
 
-### Install all dependencies using pip:
+### 1. Install Conda
 
-pip install numpy
-pip install opencv-python
-pip install matplotlib
-pip install scikit-learn
-pip install scikit-image
-pip install open3d
-pip install torch
-## 4. (Optional) Install Everything at Once
-pip install numpy opencv-python matplotlib scikit-learn scikit-image open3d torch
-## 5. Verify Installation
+If Conda is not installed, install Miniconda:
+
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+Restart the terminal and verify:
+
+```bash
+conda --version
+```
+
+---
+
+### 2. Create a Virtual Environment
+
+Create a dedicated environment for brain segmentation:
+
+```bash
+conda create -n brainseg python=3.10
+```
+
+Activate the environment:
+
+```bash
+conda activate brainseg
+```
+
+---
+
+### 3. Install Required Libraries
+
+### Scientific Computing and Image Processing
+
+```bash
+conda install -c conda-forge \
+numpy \
+scipy \
+matplotlib \
+scikit-learn \
+scikit-image \
+opencv \
+open3d
+```
+
+### PyTorch with GPU Support
+
+For NVIDIA GPUs:
+
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+
+### MONAI (Medical AI Framework)
+
+Install MONAI for U-Net and medical image segmentation:
+
+```bash
+pip install monai
+```
+
+### Additional Medical Imaging Libraries
+
+```bash
+pip install nibabel SimpleITK pandas tqdm
+```
+
+### Tkinter Support
+
+Required for GUI file selection:
+
+```bash
+sudo apt install python3-tk
+```
+
+---
+
+### 4. Verify Installation
+
+Run Python:
+
+```bash
+python
+```
+
+Test the installed libraries:
+
+```python
+import torch
+import cv2
+import numpy as np
+import sklearn
+import matplotlib
+import open3d as o3d
+import monai
+
+from skimage.measure import marching_cubes
+from monai.networks.nets import UNet
+
+print("All libraries imported successfully")
+print("CUDA available:", torch.cuda.is_available())
+```
+
+Expected output:
+
+```
+All libraries imported successfully
+CUDA available: True
+```
+
+---
+
+### 5. Project Capabilities
+
+This environment supports:
+
+- Brain MRI preprocessing
+- Morphological image processing
+- K-means based tissue segmentation
+- Deep learning segmentation using U-Net
+- MONAI-based medical AI models
+- GPU accelerated training and inference
+- 3D reconstruction using Marching Cubes
+- 3D visualization using Open3D
+
+---
+
+### 6. Environment Information
+
+Recommended configuration:
+
+```
+Python      : 3.10
+Framework   : PyTorch + MONAI
+GPU         : NVIDIA GPU with CUDA support
+Environment : Conda (brainseg)
+```
+## 3. Verify Installation
 
 Run Python and test imports:
 
