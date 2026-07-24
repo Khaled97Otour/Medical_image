@@ -17,7 +17,7 @@ This project uses computer vision, machine learning, and 3D visualization techni
 ## 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Khaled97Otour/Medical_image
 cd <repository-folder>
 ```
 
