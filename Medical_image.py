@@ -1,4 +1,5 @@
 import torch 
+import torch.nn as nn
 import cv2 
 import numpy as np 
 import sklearn
@@ -13,6 +14,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 import monai
 from monai.networks.nets import UNet
 # this version use the K-mean to segment the image 
+
 
 class Brain:
     def __init__(self):
@@ -165,31 +167,18 @@ class Brain:
         contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
         print("Number of contours:", len(contours))
         area = []
-        ratio = [] 
         bounding_box = []
         for cnt in contours:
             area.append(cv2.contourArea(cnt))
             bounding_box.append(cv2.boundingRect(cnt))
-            if cv2.contourArea(cnt) > 50:
-                ellipse = cv2.fitEllipse(cnt)
-                (center, (major_axis, minor_axis), angle) = ellipse
-                ratio.append(major_axis/minor_axis)
-            else:
-                ratio.append(0)
-                continue
-            if len(cnt) < 5: 
-                ratio.append(0)
-                continue
+            
 
         area = np.asarray(area)
-        ratio = np.asarray(ratio)
         print(bounding_box)
         print(area)
         print(area.argsort().argsort())
 
-        print(ratio)
-        print(ratio.argsort().argsort())
-        return contours , area , ratio , bounding_box
+        return contours, area, bounding_box
 
     def Segmentation(self, image):
         '''
@@ -205,10 +194,11 @@ class Brain:
             (2d array of the segmented image)
         '''
         counter_image = image.copy()
-        contours , area , ratio , bounding_box = self.contour_detecter(image)
+        contours ,area ,bounding_box = self.contour_detecter(image)
         index = 0
         for cnt in contours: 
-            if (cv2.contourArea(cnt) > 600) and (ratio[index] > 0.55) and (bounding_box[index][0] > 150) and (bounding_box[index][1] > 140): 
+            ratio = min (bounding_box[index][0],bounding_box[index][1])/max(bounding_box[index][0],bounding_box[index][1])
+            if (cv2.contourArea(cnt) > 600) and (ratio > 0.45)  and (bounding_box[index][0] > 120) and (bounding_box[index][1] > 120): 
                 counter_image = cv2.drawContours(counter_image, contours, index, 255, -1) 
             else: 
                 counter_image = cv2.drawContours(counter_image, contours, index, 0, -1) 
@@ -225,7 +215,8 @@ class Brain:
                 index += 1
         index = 0
         for cnt in contours: 
-            if (area.max() < 500): 
+            ratio = min (bounding_box[index][0],bounding_box[index][1])/max(bounding_box[index][0],bounding_box[index][1])
+            if (area.max() < 500) and (ratio > 0.45) : 
                 counter_image = cv2.drawContours(counter_image, contours, index, 0, -1) 
             index += 1
 
@@ -308,7 +299,6 @@ class Brain:
         strides=(2, 2, 2, 2),
         )
 
-        print(model)
     def calculate_mean_variance(self, image_roi):
         """
         Calculates the local mean and variance for each pixel in a region of interest (ROI) 
@@ -458,11 +448,64 @@ class Brain:
 
         o3d.visualization.draw_geometries([pcd])
 
+model = UNet(
+        spatial_dims=2,
+        in_channels=1,
+        out_channels=3,
+        channels=(16, 32, 64, 128, 256),
+        strides=(2, 2, 2, 2),
+        )
+path = "/mnt/c/Users/khale/Desktop/Brain/normal-ct-brain (11).jpg"
+Brain = Brain()
+test = Brain.read_image(path)
+test = cv2.resize(test,(256,256))
+Brain.Display_image(test)
+test = np.expand_dims(test, axis=0)
+mask = test.copy()
+test = np.expand_dims(test, axis=0)
+test = torch.from_numpy(test).float()
+print(model)
+
+print(test.shape)
+
+loss_function = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(
+    model.parameters(),
+    lr=1e-4
+)
+prediction = model(test)
+print(prediction.shape)
+prediction = prediction.detach().numpy()
+
+_, binary_image1 = cv2.threshold(prediction[0][0], prediction[0][0].mean(), prediction[0][0].max(), cv2.THRESH_BINARY)
+_, binary_image2 = cv2.threshold(prediction[0][1], prediction[0][1].mean(), prediction[0][1].max(), cv2.THRESH_BINARY)
+_, binary_image3 = cv2.threshold(prediction[0][2], prediction[0][2].mean(), prediction[0][2].max(), cv2.THRESH_BINARY)
+plt.figure
+plt.subplot(1,3,1)
+plt.imshow(binary_image1,cmap='gray')
+plt.subplot(1,3,2)
+plt.imshow(binary_image2,cmap='gray')
+plt.subplot(1,3,3)
+plt.imshow(binary_image3,cmap='gray')
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
 Brain = Brain()
 # hide main tkinter window
 file_path = None
 root_path = None
-
+"""
 while(1):
     feature = input("Select your process: 'img' for one image 'folder' for a sequence of images ")
     
@@ -510,3 +553,4 @@ if root_path != None:
             break
         else: 
             print("wrong input try again")
+"""
