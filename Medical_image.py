@@ -448,16 +448,21 @@ class Brain:
 
         o3d.visualization.draw_geometries([pcd])
 
-model = UNet(
-        spatial_dims=2,
-        in_channels=1,
-        out_channels=3,
-        channels=(16, 32, 64, 128, 256),
-        strides=(2, 2, 2, 2),
-        )
+from monai.bundle import download, load
+
+download(
+    name="spleen_ct_segmentation",
+    bundle_dir="./models"
+)
+
+model = monai.bundle.load(
+    name="spleen_ct_segmentation",
+    bundle_dir="./models"
+)
+
 path = "/mnt/c/Users/khale/Desktop/Brain/normal-ct-brain (11).jpg"
 Brain = Brain()
-test = Brain.read_image(path)
+test = Brain.get_segmented_image(path)
 test = cv2.resize(test,(256,256))
 Brain.Display_image(test)
 test = np.expand_dims(test, axis=0)
@@ -474,19 +479,25 @@ optimizer = torch.optim.Adam(
     lr=1e-4
 )
 prediction = model(test)
-print(prediction.shape)
 prediction = prediction.detach().numpy()
+print(prediction.shape)
 
-_, binary_image1 = cv2.threshold(prediction[0][0], prediction[0][0].mean(), prediction[0][0].max(), cv2.THRESH_BINARY)
-_, binary_image2 = cv2.threshold(prediction[0][1], prediction[0][1].mean(), prediction[0][1].max(), cv2.THRESH_BINARY)
-_, binary_image3 = cv2.threshold(prediction[0][2], prediction[0][2].mean(), prediction[0][2].max(), cv2.THRESH_BINARY)
+prediction[0][0][prediction[0][0] > prediction[0][0].mean()] =255
+prediction[0][0][prediction[0][0] < prediction[0][0].mean()] =0
+
+prediction[0][1][prediction[0][1] > prediction[0][1].mean()] =255
+prediction[0][1][prediction[0][1] < prediction[0][1].mean()] =0
+
+prediction[0][2][prediction[0][2] > prediction[0][2].mean()] =255
+prediction[0][2][prediction[0][2] < prediction[0][2].mean()] =0
+
 plt.figure
 plt.subplot(1,3,1)
-plt.imshow(binary_image1,cmap='gray')
+plt.imshow(prediction[0][0],cmap='gray')
 plt.subplot(1,3,2)
-plt.imshow(binary_image2,cmap='gray')
+plt.imshow(prediction[0][1],cmap='gray')
 plt.subplot(1,3,3)
-plt.imshow(binary_image3,cmap='gray')
+plt.imshow(prediction[0][2],cmap='gray')
 
 plt.show()
 
