@@ -10,6 +10,8 @@ import open3d as o3d
 import os
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename, askdirectory
+import monai
+from monai.networks.nets import UNet
 # this version use the K-mean to segment the image 
 
 class Brain:
@@ -296,6 +298,17 @@ class Brain:
         )
         images =[label_0,label_1,label_3]
         return images
+    
+    def segmentation_UNET(self, image):
+        model = UNet(
+        spatial_dims=2,
+        in_channels=1,
+        out_channels=3,
+        channels=(16, 32, 64, 128, 256),
+        strides=(2, 2, 2, 2),
+        )
+
+        print(model)
     def calculate_mean_variance(self, image_roi):
         """
         Calculates the local mean and variance for each pixel in a region of interest (ROI) 
