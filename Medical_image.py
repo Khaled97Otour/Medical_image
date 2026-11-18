@@ -41,6 +41,9 @@ class Brain:
             return f.max_pool2d(image,kernel_size = kernel ,stride=1 , padding= kernel//2)
         except:
             return f.max_pool2d(image,kernel_size = kernel ,stride=1 , padding= kernel//2)
+    def edges_dectection(self,image,valmin,valmax):
+        edges = cv2.Canny(image,valmin,valmax)
+        return edges
     def erosion(self, image, kernel = 3):
         '''
         doing a Morphology operation (erosion) on the input image using the kernel that set to default at 3 
