@@ -497,22 +497,17 @@ prediction = model(test)
 prediction = prediction.detach().numpy()
 print(prediction.shape)
 
-prediction[0][0][prediction[0][0] > prediction[0][0].mean()] =255
-prediction[0][0][prediction[0][0] < prediction[0][0].mean()] =0
-
-prediction[0][1][prediction[0][1] > prediction[0][1].mean()] =255
-prediction[0][1][prediction[0][1] < prediction[0][1].mean()] =0
-
-prediction[0][2][prediction[0][2] > prediction[0][2].mean()] =255
-prediction[0][2][prediction[0][2] < prediction[0][2].mean()] =0
-
+for i in range(3):
+    prediction_mean = prediction[0][i].mean()          
+    prediction[0][i] = np.where(prediction[0][i]> prediction_mean,255,0)
 plt.figure
-plt.subplot(1,3,1)
-plt.imshow(prediction[0][0],cmap='gray')
-plt.subplot(1,3,2)
-plt.imshow(prediction[0][1],cmap='gray')
-plt.subplot(1,3,3)
-plt.imshow(prediction[0][2],cmap='gray')
+fig, axes = plt.subplot(1,3,1)
+Titles = ["background","WiteMatter", "GrayMatter"]
+
+for i in range(3):
+    axes[i].imshow(prediction[0][i], cmap="gray")
+coords = {0: [],1:[],2:[]}
+
 
 plt.show()
 
