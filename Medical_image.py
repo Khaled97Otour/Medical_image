@@ -42,6 +42,18 @@ class Brain:
         except:
             return f.max_pool2d(image,kernel_size = kernel ,stride=1 , padding= kernel//2)
     def edges_dectection(self,image,valmin,valmax):
+        '''
+        getting the image edge from the input image          
+        Parameter:
+        ----------
+        
+        image: nparray 
+            (2D array of the brain image)
+        Return:
+        -------
+        image_copy: 
+            (2d array of the edge image)
+        '''
         edges = cv2.Canny(image,valmin,valmax)
         return edges
     def erosion(self, image, kernel = 3):
